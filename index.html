@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<!--让IE以最新的内核渲染 -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+	<!--让视口宽度为设备宽度,不允许用户缩放 -->
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<!--不自动识别电话号码和邮编 -->
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="format-detection" content="email=no"/>
+	<title>Document</title>
+	<!-- <link rel="stylesheet" href="css/style.css"> -->
+</head>
+<style>
+	@import url("css/reset.css");
+	html,body,.container{
+		width:100%;
+		height:100%;
+		overflow:hidden;
+	}
+	.ggl,.jp{
+		width:300px;
+		height:150px;
+		margin:auto;
+		margin-top:50px;
+	}
+	.ggl{
+		position:relative;
+	}
+	.jp{
+		background:red;
+		text-align:center;
+		line-height:150px;
+		font-size:50px;
+		color:#fff;
+	}
+	canvas{
+		position:absolute;
+		left:0;
+		top:0;
+	}
+</style>
+<body>
+	<div class="container">
+		<div id="ggl" class="ggl">
+			<section class="jp" id="jp">一等奖</section>
+			<canvas id="cvs" width="300" height="150">此浏览器不支持canvas</canvas>
+		</div>
+	</div>
+<script>
+	var cvs=document.getElementById("cvs"),
+		ggl=document.getElementById("ggl"),
+		jp=document.getElementById("jp"),
+		arr=["一等奖","二等奖","三等奖","Thanks"],
+		len=arr.length,
+		ram=Math.floor(Math.random()*len),
+		cxt=cvs.getContext("2d");
+		jp.innerHTML=arr[ram];
+		cxt.beginPath();
+		cxt.fillStyle="#ccc";
+		cxt.fillRect(0,0,300,150);
+		cxt.closePath();
+		cvs.addEventListener("touchstart",function(e){
+			sFn(e);
+		},false);
+		cvs.addEventListener("touchmove",function(e){
+			mFn(e);
+		},false);
+		function sFn(e){
+			var s_x=e.touches[0].clientX-ggl.offsetLeft,
+				s_y=e.touches[0].clientY-ggl.offsetTop;
+			cxt.beginPath();
+			cxt.globalCompositeOperation="destination-out";
+			cxt.lineWidth="20";
+			cxt.lineCap="round";
+			cxt.moveTo(s_x,s_y);
+		}
+		function mFn(e){
+			var m_x=e.touches[0].clientX-ggl.offsetLeft,
+				m_y=e.touches[0].clientY-ggl.offsetTop;
+			cxt.lineTo(m_x,m_y);
+			cxt.stroke();
+			if(getArea(cxt)*100>50){
+				cxt.fillRect(0,0,300,150)
+			}
+		}
+		function getArea(cxt){
+			var area=cxt.getImageData(0,0,300,150),n=0
+			for(var i=0;i<area.data.length;i++){
+				if(area.data[i]==0){
+					n++;
+				}
+			}
+			return n/area.data.length;
+		}
+
+</script>
+</body>
+</html>
